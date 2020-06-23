@@ -23,20 +23,35 @@ export default class DisplayUserLocationAndRZ extends Component{
     mapRegion: this.props.mapRegion,
     latitude: this.props.latitude,
     longitude: this.props.longitude,
+    regions: this.props.regions
   }
   render(){
     return this.state.mapRegion ? (
-      <MapView
+    <MapView
       style={globalStyles.mapStyle}
       region={this.state.mapRegion}
     >
-    <Marker
-      title="User location"
-      coordinate={{
-        latitude: this.state.latitude,
-        longitude: this.state.longitude
-      }}
-    />
+      <Marker
+        title="User location"
+        coordinate={{
+          latitude: this.state.latitude,
+          longitude: this.state.longitude
+        }}
+      />
+      {this.state.regions.map((region) => {
+        return(
+          <Circle
+            key={region.longitude+region.latitude}
+            center={{
+              latitude: region.latitude,
+              longitude: region.longitude,
+            }}
+            radius={region.radius}
+            strokeColor='red'
+            fillColor={'rgba(244,0,0,0.4)'}
+          />
+        )
+      })}
     </MapView>
     ) : (
       <Text>LOADING LOCATION</Text>

@@ -1,10 +1,10 @@
 import React from 'react'
 import DisplayUserLocationAndRZ from '../components/DisplayUserLocationAndRZ'
-import DisplayWarning from '../components/DisplayWarning'
 import { View } from 'react-native'
 import globalStyles from '../styles/globalStyles'
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import regions from '../regions/regions'
 
 export default class LocationAndRZ extends React.Component {
     state = {
@@ -31,10 +31,9 @@ export default class LocationAndRZ extends React.Component {
         );
         if (status === 'granted') {
           this.setState({ hasLocationPermissions: true });
-          //  let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-          let location = await Location.getCurrentPositionAsync({});
+          let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+          // let location = await Location.getCurrentPositionAsync({});
           this.setState({ locationResult: JSON.stringify(location) });
-          // Center the map on the location we just fetched.
           this.setState({
             mapRegion: {
               latitude: location.coords.latitude,
@@ -54,7 +53,8 @@ export default class LocationAndRZ extends React.Component {
                 <DisplayUserLocationAndRZ 
                     mapRegion={this.state.mapRegion} 
                     latitude={this.state.mapRegion.latitude} 
-                    longitude={this.state.mapRegion.longitude}  
+                    longitude={this.state.mapRegion.longitude}
+                    regions={regions}  
                 />
             </View>
         );
