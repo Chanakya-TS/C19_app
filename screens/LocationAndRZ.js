@@ -1,9 +1,7 @@
 import React from 'react'
 import DisplayUserLocationAndRZ from '../components/DisplayUserLocationAndRZ'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import globalStyles from '../styles/globalStyles'
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
 import regions from '../regions/regions'
 
 export default class LocationAndRZ extends React.Component {

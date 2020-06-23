@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import DisplayUserLocationAndRZ from './components/DisplayUserLocationAndRZ';
-import DisplayWarning from './components/DisplayWarning';
-import { View } from 'react-native';
-import LocationWarningContextProvider from './context/LocationWarningContext';
 import LocationAndRZ from './screens/LocationAndRZ';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as TaskManager from 'expo-task-manager';
+import regions from './regions/regions'
+import { View, Text } from 'react-native';
 
 export default class App extends Component{
   state = {
@@ -17,9 +16,45 @@ export default class App extends Component{
     },
     hasLocationPermissions: false,
     locationResult: null,
+    location: null,
   };
-componentDidMount() {
+
+componentDidMount = () => {
     this.getLocationAsync();
+    Location.startGeofencingAsync("isUserInRZ", regions)
+    
+}
+
+startTasks = () => {
+  TaskManager.defineTask("isUserInRZ", ({ data: { eventType, region }, error }) => {
+    if (error) {
+      console.log("ERROR");
+      return;
+    }
+    if (eventType === Location.GeofencingEventType.Enter) {
+      console.log("You've entered region:", region);
+    } else if (eventType === Location.GeofencingEventType.Exit) {
+      console.log("You've left region:", region);
+    }
+  });
+  TaskManager.defineTask("getLocationUpdates", ({ data: { locations }, error }) => {
+    if (error) {
+      console.log("ERROR");
+      return;
+    }
+    let location = Object.values({...locations})[0].coords
+    this.setState({
+      location
+    })
+    this.setState({
+      mapRegion: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+      },
+  })
+})
 }
 
 handleMapRegionChange = mapRegion => {
@@ -32,28 +67,22 @@ async getLocationAsync () {
     );
     if (status === 'granted') {
       this.setState({ hasLocationPermissions: true });
-      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-      // let location = await Location.getCurrentPositionAsync({});
-      this.setState({ locationResult: JSON.stringify(location) });
-      this.setState({
-        mapRegion: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        },
-      });
+      Location.startLocationUpdatesAsync('getLocationUpdates')
     } else {
       alert('Location permission not granted');
     }
 };
   render(){
-    return(
-      <LocationAndRZ
-        mapRegion={this.state.mapRegion}
-        latitude={this.state.mapRegion.latitude}
-        longitude={this.state.mapRegion.longitude}
-      />
+    this.startTasks()
+    return this.state.location ? (
+    <LocationAndRZ
+      mapRegion={this.state.mapRegion}
+      latitude={this.state.location.latitude}
+      longitude={this.state.location.longitude}
+      location={this.state.location}
+    />
+    ) : (
+      <Text>LOADING</Text>
     )
-  }
+  } 
 }

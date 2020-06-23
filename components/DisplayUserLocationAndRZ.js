@@ -1,13 +1,8 @@
-import React, { useContext, Component, useEffect } from 'react';
-import MapView, { Marker, Circle } from 'react-native-maps';
+import React, { Component } from 'react';
+import MapView, { Marker } from 'react-native-maps';
 import globalStyles from '../styles/globalStyles'
-import { StyleSheet, View, Dimensions, Text } from 'react-native';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
-import * as TaskManager from 'expo-task-manager';
+import { Text } from 'react-native';
 import DisplayGeoFences from './DisplayGeoFences';
-import DisplayWarning from './DisplayWarning';
-import { LocationWarningContext } from '../context/LocationWarningContext';
 
 export default class DisplayUserLocationAndRZ extends Component{
   componentDidUpdate(prevProps){
@@ -43,6 +38,5 @@ export default class DisplayUserLocationAndRZ extends Component{
     ) : (
       <Text>LOADING LOCATION</Text>
     )
-    
-    }
+  }
 }
