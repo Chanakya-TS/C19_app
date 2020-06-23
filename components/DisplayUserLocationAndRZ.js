@@ -38,20 +38,7 @@ export default class DisplayUserLocationAndRZ extends Component{
           longitude: this.state.longitude
         }}
       />
-      {this.state.regions.map((region) => {
-        return(
-          <Circle
-            key={region.longitude+region.latitude}
-            center={{
-              latitude: region.latitude,
-              longitude: region.longitude,
-            }}
-            radius={region.radius}
-            strokeColor='red'
-            fillColor={'rgba(244,0,0,0.4)'}
-          />
-        )
-      })}
+      <DisplayGeoFences regions={this.state.regions} />
     </MapView>
     ) : (
       <Text>LOADING LOCATION</Text>

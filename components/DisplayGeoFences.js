@@ -5,8 +5,12 @@ export default function DisplayGeoFences({ regions }) {
     return(
         regions.map((region) => (
             <Circle
-                center={{latitude: region.latitude, longitude: region.longitude}}
-                radius={100000}
+                key={region.latitude+region.longitude}
+                center={{
+                    latitude: region.latitude,
+                    longitude: region.longitude
+                }}
+                radius={region.radius}
                 strokeColor='red'
                 fillColor={'rgba(249, 0, 0, 0.35)'}
             />
